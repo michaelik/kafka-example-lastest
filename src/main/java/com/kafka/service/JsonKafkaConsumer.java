@@ -10,7 +10,7 @@ public interface JsonKafkaConsumer {
 
     @KafkaListener(topics = "topicOne", groupId = "myGroup")
     void handleBook(
-            @Payload Book book,
+            @Payload Book payload,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
             @Header(KafkaHeaders.OFFSET) Long offset,
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic);

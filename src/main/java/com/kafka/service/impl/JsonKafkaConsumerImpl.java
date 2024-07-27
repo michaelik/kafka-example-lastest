@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
     @Override
-    public void handleBook(Book book, int partition, Long offset, String topic) {
-        log.info(Message.PARTITION_DETAILS.formatted(book, partition, offset, topic));
+    public void handleBook(Book  payload, int partition, Long offset, String topic) {
+        log.info(Message.PARTITION_DETAILS.formatted(payload, partition, offset, topic));
     }
 }

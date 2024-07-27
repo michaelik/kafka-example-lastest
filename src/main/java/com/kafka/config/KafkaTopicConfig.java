@@ -13,14 +13,14 @@ public class KafkaTopicConfig {
     public NewTopic topicOne() {
         return TopicBuilder.name("topicOne")
                 .partitions(6)  // Number of partitions
-                .replicas(3)     // Replication factor
+                .replicas(1)     // Replication factor
                 .config(TopicConfig.RETENTION_BYTES_CONFIG, "1073741824") // Retain up to 1 GB of messages
                 .build();
     }
 
-    @Bean
-    public NewTopic topicTwo() {
-        return TopicBuilder.name("topicTwo")
-                .build();
-    }
+//    @Bean
+//    public NewTopic topicTwo() {
+//        return TopicBuilder.name("topicTwo")
+//                .build();
+//    }
 }
