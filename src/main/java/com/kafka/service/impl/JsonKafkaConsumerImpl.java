@@ -1,12 +1,14 @@
 package com.kafka.service.impl;
 
+import com.kafka.config.KafkaTopicConfig;
 import com.kafka.constant.Message;
 import com.kafka.dtos.Book;
 import com.kafka.service.JsonKafkaConsumer;
 import jakarta.mail.SendFailedException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.TimeoutException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
@@ -15,18 +17,14 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
 
-    @Value("#{'${kafka.topics.user.name}'.split(',')}")
-    private List<String> topics;
+    private final KafkaTopicConfig kafkaTopicConfig;
 
-    public List<String> getTopics() {
-        return topics;
-    }
 
     @RetryableTopic(
             include = {
@@ -41,7 +39,7 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
             retryTopicSuffix = "-retry",
             dltTopicSuffix = "-dlt"
     )
-    @KafkaListener(topics = "#{__listener.getTopics()[0]}")
+    @KafkaListener(topics = "#{@kafkaTopicConfig.getTopics()[0]}")
     @Override
     public void handleBook(Book  payload, int partition, Long offset, String topic) {
         try {
@@ -55,9 +53,11 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
         }
     }
 
-    @KafkaListener(topics = "#{__listener.getTopics()[1]}", groupId = "dltGroup")
+    @KafkaListener(topics = "#{@kafkaTopicConfig.getTopics()[1]}", groupId = "dltGroup")
     public void handleDlqMessage(String payload) {
         // Process or analyze the failed message
         log.error(Message.DLT_MESSAGE_RECEIVED, payload);
     }
+
+
 }
