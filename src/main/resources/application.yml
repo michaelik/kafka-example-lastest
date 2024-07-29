@@ -1,6 +1,11 @@
 server:
   port: 3030
 
+kafka:
+  topics:
+    user:
+      name: "topicOne, topicTwo"
+
 logging:
   pattern:
     console: "%d{HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{10}) : %msg%n"

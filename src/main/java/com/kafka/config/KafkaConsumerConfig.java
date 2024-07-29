@@ -1,7 +1,6 @@
 package com.kafka.config;
 
 import com.kafka.constant.Message;
-import com.kafka.dtos.Book;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -14,6 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,11 +24,12 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, Book> consumerFactory() {
+    public ConsumerFactory<String, Object> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "myGroup");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         // Handle Error Uniformly
         props.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
@@ -47,30 +48,25 @@ public class KafkaConsumerConfig {
                 ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS,
                 JsonDeserializer.class
         );
-        // Specify the target type for the JsonDeserializer and Trusted Package
-        JsonDeserializer<Book> jsonDeserializer = new JsonDeserializer<>(Book.class);
-        jsonDeserializer.addTrustedPackages("*");
 
-        return new DefaultKafkaConsumerFactory<>(
-                props,
-                new StringDeserializer(),
-                new ErrorHandlingDeserializer<>(jsonDeserializer));
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Book>
+    public ConcurrentKafkaListenerContainerFactory<String, Object>
     kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Book> factory =
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setConcurrency(6); // Set concurrency level to 6
-        factory.setContainerCustomizer(container -> {
-            container.setCommonErrorHandler(new DefaultErrorHandler(
-                    (data, exception) -> log.info(
-                            Message.ERROR_MESSAGE, exception.getMessage()
-                    )
-            ));
-        });
+        factory.setContainerCustomizer(
+                container -> container.setCommonErrorHandler(
+                new DefaultErrorHandler(
+                (data, exception) -> log.info(
+                        Message.ERROR_MESSAGE, exception.getMessage()
+                ),
+               new FixedBackOff(1000L, 2)
+        )));
         return factory;
     }
 }
