@@ -4,7 +4,7 @@ server:
 kafka:
   topics:
     user:
-      name: "topicOne, topicTwo"
+      name: "topicOne,topicOne-dlt"
 
 logging:
   pattern:
