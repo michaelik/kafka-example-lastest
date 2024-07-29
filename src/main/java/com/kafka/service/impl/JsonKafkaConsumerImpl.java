@@ -24,6 +24,10 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
     @Value("#{'${kafka.topics.user.name}'.split(',')}")
     private List<String> topics;
 
+    public List<String> getTopics() {
+        return topics;
+    }
+
     @RetryableTopic(
             include = {
                     SendFailedException.class,
@@ -37,7 +41,7 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
             retryTopicSuffix = "-retry",
             dltTopicSuffix = "-dlt"
     )
-    @KafkaListener(topics = "#{__listener.topics[0]}")
+    @KafkaListener(topics = "#{__listener.getTopics()[0]}")
     @Override
     public void handleBook(Book  payload, int partition, Long offset, String topic) {
         try {
@@ -51,7 +55,7 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
         }
     }
 
-    @KafkaListener(topics = "#{__listener.topics[1]}", groupId = "dltGroup")
+    @KafkaListener(topics = "#{__listener.getTopics()[1]}", groupId = "dltGroup")
     public void handleDlqMessage(String payload) {
         // Process or analyze the failed message
         log.error(Message.DLT_MESSAGE_RECEIVED, payload);
