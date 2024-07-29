@@ -11,4 +11,5 @@ public interface JsonKafkaConsumer {
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
             @Header(KafkaHeaders.OFFSET) Long offset,
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic);
+    void handleDlqMessage(String payload);
 }
