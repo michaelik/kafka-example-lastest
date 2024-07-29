@@ -13,7 +13,6 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,14 +57,13 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(6); // Set concurrency level to 6
+        factory.setConcurrency(4); // Set concurrency level to 4
         factory.setContainerCustomizer(
                 container -> container.setCommonErrorHandler(
                 new DefaultErrorHandler(
                 (data, exception) -> log.info(
                         Message.ERROR_MESSAGE, exception.getMessage()
-                ),
-               new FixedBackOff(1000L, 2)
+                )
         )));
         return factory;
     }
