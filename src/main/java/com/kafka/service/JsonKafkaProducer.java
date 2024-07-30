@@ -1,8 +1,8 @@
 package com.kafka.service;
 
-import com.kafka.dtos.Book;
+import com.kafka.dtos.BookDTO;
 
 public interface JsonKafkaProducer {
 
-    void sendMessage(Book book);
+    void sendMessage(BookDTO book);
 }

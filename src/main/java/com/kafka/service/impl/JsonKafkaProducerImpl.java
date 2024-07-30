@@ -1,16 +1,13 @@
 package com.kafka.service.impl;
 
 import com.kafka.constant.Message;
-import com.kafka.dtos.Book;
+import com.kafka.dtos.BookDTO;
 import com.kafka.service.JsonKafkaProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.FailureCallback;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SuccessCallback;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +19,7 @@ public class JsonKafkaProducerImpl implements JsonKafkaProducer {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public void sendMessage(Book book) {
+    public void sendMessage(BookDTO book) {
         CompletableFuture<SendResult<String, Object>> future = kafkaTemplate
                 .send("topicOne", book);
 

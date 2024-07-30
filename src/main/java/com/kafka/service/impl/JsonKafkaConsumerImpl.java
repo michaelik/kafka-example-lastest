@@ -2,13 +2,12 @@ package com.kafka.service.impl;
 
 import com.kafka.config.KafkaTopicConfig;
 import com.kafka.constant.Message;
-import com.kafka.dtos.Book;
+import com.kafka.dtos.BookDTO;
 import com.kafka.service.JsonKafkaConsumer;
 import jakarta.mail.SendFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.TimeoutException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
@@ -41,7 +40,7 @@ public class JsonKafkaConsumerImpl implements JsonKafkaConsumer {
     )
     @KafkaListener(topics = "#{@kafkaTopicConfig.getTopics()[0]}")
     @Override
-    public void handleBook(Book  payload, int partition, Long offset, String topic) {
+    public void handleBook(BookDTO payload, int partition, Long offset, String topic) {
         try {
             // Processing logic for the Book payload
             log.info(Message.PARTITION_DETAILS.formatted(payload, partition, offset, topic));

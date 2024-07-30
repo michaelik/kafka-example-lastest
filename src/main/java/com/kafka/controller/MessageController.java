@@ -1,7 +1,8 @@
 package com.kafka.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kafka.dtos.Book;
+import com.kafka.dtos.BookDTO;
+import com.kafka.dtos.EmailDTO;
 import com.kafka.service.JsonKafkaProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,14 @@ public class MessageController {
 
     @PostMapping("/json-publish")
     public ResponseEntity<String> json_publish(
-            @RequestBody Book book
+            @RequestBody BookDTO book
     ) throws JsonProcessingException {
         jsonKafkaProducer.sendMessage(book);
         return ResponseEntity.ok("json message send to kafka topic");
+    }
+
+    @PostMapping("/email")
+    public void create(@RequestBody EmailDTO request) {
+        // logic for publishing email to kafka
     }
 }
