@@ -1,6 +1,7 @@
 package com.kafka.config;
 
 import com.kafka.constant.Message;
+import lombok.Getter;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.config.TopicConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.kafka.config.TopicBuilder;
 import java.util.List;
 
 @Configuration
+@Getter
 public class KafkaTopicConfig {
 
     @Value("#{'${kafka.topics.user.name}'.split(',')}")
