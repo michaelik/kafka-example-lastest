@@ -1,15 +1,14 @@
 package com.kafka.service;
 
-import com.kafka.dtos.BookDTO;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 
-public interface JsonKafkaConsumer {
-    void handleBook(
-            @Payload BookDTO payload,
+public interface EmailMessageKafkaConsumer {
+    void listen(
+            @Payload Long id,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
             @Header(KafkaHeaders.OFFSET) Long offset,
-            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic);
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws InterruptedException;
     void handleDlqMessage(String payload);
 }

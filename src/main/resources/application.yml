@@ -1,11 +1,49 @@
+# Server port configuration
 server:
   port: 3030
 
+# Kafka topics for user events and dead-letter topic
 kafka:
   topics:
     user:
       name: "topicOne,topicOne-dlt"
 
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/email
+    username: postgres
+    password: mike
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+      show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+    # Email configuration
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username:
+    password:
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            port: 587
+            class: javax.net.ssl.SSLSocketFactory
+          starttls:
+            enable: true
+            required: true
+
+# Logging pattern for console output
 logging:
   pattern:
     console: "%d{HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{10}) : %msg%n"
+
