@@ -12,8 +12,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/email
-    username: postgres
-    password: mike
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
   jpa:
     generate-ddl: true
     hibernate:
@@ -28,8 +28,8 @@ spring:
   mail:
     host: live.smtp.mailtrap.io
     port: 587
-    username:
-    password:
+    username: ${MAILTRAP_USERNAME}
+    password: ${MAILTRAP_PASSWORD}
     protocol: smtp
     properties:
       mail:
